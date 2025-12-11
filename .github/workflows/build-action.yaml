@@ -6,7 +6,7 @@ on:
 
 env:
   artifact_name: ticket-api
-  artifact_image: ghcr.io/bskracic/ticket-api 
+  artifact_image: ghcr.io/bornaksracic/ticket-api 
   server_address: 5.75.250.0
 
 jobs:
