@@ -48,7 +48,7 @@ jobs:
         run: docker --context regoch pull ${{ env.artifact_image }}:0.0.0
 
       - name: Remove running container
-        run: docker --context rm -f ticketapi 2>/dev/null || true
+        run: docker --context regoch rm -f ticketapi 2>/dev/null || true
 
       - name: Run new container
-        run: docker --context run -d --name ticketapi -p 8080:8080 ${{ env.artifact_image }}:0.0.0
+        run: docker --context regoch run -d --name ticketapi -p 8080:8080 ${{ env.artifact_image }}:0.0.0
