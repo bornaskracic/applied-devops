@@ -20,7 +20,7 @@ jobs:
         run: echo "${{ secrets.REGISTRY_ACCESS_TOKEN }}" | docker login ghcr.io --username ${{ secrets.REGISTRY_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -f ./Dockerfile -t ${{ env.artifact_image }}:0.0.0 ./example-app
+        run: docker build -f ./Dockerfile -t ${{ env.artifact_image }}:0.0.0 ./TicketApi
 
       - name: Publish image
         run: docker push ${{ env.artifact_image }}:0.0.0
