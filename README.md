@@ -63,6 +63,7 @@ Fork this repository and see if you can set it up to work with your GitHub secre
 
 1. programatically detect the current version of the application and automatically increment it when the application is built and deployed
 2. test the code before building the Docker image
+3. add one more service (e.g. Postgres database) that is the dependency for the main Web API application (define a `docker-compose` that needs to be copied into the server environment)
 
 ## Note
 If you have a suggestion on how to improve this example, please open an issue and describe your idea!

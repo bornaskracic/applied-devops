@@ -1,4 +1,4 @@
-name: Build
+name: Dev Workflow
 
 on:
   push:
@@ -29,11 +29,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compose-file
-
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -52,5 +47,8 @@ jobs:
       - name: Pull Docker image
         run: docker --context regoch pull ${{ env.artifact_image }}:0.0.0
 
-      - name: Run docker-compose
-        run: docker --context regoch compose -f docker-compose.deploy.yaml up -d
+      - name: Remove running container
+        run: docker --context rm -f ticketapi 2>/dev/null || true
+
+      - name: Run new container
+        run: docker --context run -d --name ticketapi -p 8080:8080 ${{ env.artifact_image }}:0.0.0
