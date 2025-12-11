@@ -1,4 +1,4 @@
-namespace TicketApp.Models
+namespace TicketApi.Models
 {
 
     public class Ticket

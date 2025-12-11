@@ -1,0 +1,56 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  artifact_name: ticket-api
+  artifact_image: ghcr.io/bskracic/ticket-api 
+  server_address: 5.75.250.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Login into GHCR
+        run: echo "${{ secrets.REGISTRY_ACCESS_TOKEN }}" | docker login ghcr.io --username ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build -f ./Dockerfile -t ${{ env.artifact_image }}:0.0.0 ./example-app
+
+      - name: Publish image
+        run: docker push ${{ env.artifact_image }}:0.0.0
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: compose-file
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: placeholder
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ env.server_address }} >> ~/.ssh/known_hosts
+
+      - name: Create remote Docker context
+        run: docker context create regoch --docker "host=ssh://github@${{ env.server_address }}"
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.REGISTRY_ACCESS_TOKEN }}" | docker --context regoch login ghcr.io --username ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+
+      - name: Pull Docker image
+        run: docker --context regoch pull ${{ env.artifact_image }}:0.0.0
+
+      - name: Run docker-compose
+        run: docker --context regoch compose -f docker-compose.deploy.yaml up -d

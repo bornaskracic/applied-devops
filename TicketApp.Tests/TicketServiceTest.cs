@@ -1,5 +1,5 @@
-using TicketApp.Models;
-using TicketApp.Services;
+using TicketApi.Models;
+using TicketApi.Services;
 using Xunit;
 
 public class TicketServiceTests

@@ -1,7 +1,6 @@
-using System;
-using TicketApp.Models;
+using TicketApi.Models;
 
-namespace TicketApp.Services
+namespace TicketApi.Services
 {
     public class TicketService
     {
